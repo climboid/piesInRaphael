@@ -1,0 +1,74 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
+		<title>lin</title>
+		<script type="text/javascript" src="raphael.js"></script>
+		<script type="text/javascript" src="gRaphael.js"></script>
+		<script type="text/javascript" src="gPie.js"></script>
+		<style type="text/css">
+			body {
+			    
+			    font: 100.01% "Fontin Sans", Fontin-Sans, "Myriad Pro", "Lucida Grande", "Lucida Sans Unicode", Lucida, Verdana, Helvetica, sans-serif;
+			    color: #000;
+			    margin: 10px 0 0 0;
+			    padding: 0;
+			    text-align: center;
+			}
+			#holder {
+			    -moz-border-radius: 10px;
+			    -webkit-border-radius: 10px;
+			    -webkit-box-shadow: 0 1px 3px #666;
+			    background: #ddd;
+			    margin: 0 auto;
+			    width:300px;
+			    height: 480px;
+			}
+			p {
+			    text-align: left;
+			    margin: .5em 2em;
+			}
+	</style>
+	</head>
+	<body>
+		<div id="holder"></div>
+		<script type="text/javascript" charset="utf-8">
+			var values = [];
+			values[0]=55;
+			values[1]=10;
+			values[2]=5;
+			values[3]=20;
+			values[4]=2;
+			values[5]=5;
+			values[6]=5;
+			values[7]=5;
+			values[8]=5;
+            window.onload = function () {
+                var r = Raphael("holder");
+                r.g.txtattr.font = "12px 'Fontin Sans', Fontin-Sans, sans-serif";
+                
+                r.g.text(150, 30, "Interactive Pie Chart").attr({"font-size": 20});
+                
+                var pie = r.g.piechart(150, 160, 100, values, {legend: ["%%.%% 	Enterprise Users", "%%.%% IE Users","%%.%% bubbles"], legendpos: "south", href: ["http://raphaeljs.com", "http://g.raphaeljs.com"]});
+                pie.hover(function () {
+                    this.sector.stop();
+                    this.sector.scale(1.2, 1.2, this.cx, this.cy);
+                    if (this.label) {
+                        this.label[0].stop();
+                        this.label[0].scale(1.5);
+                        this.label[1].attr({"font-weight": 800});
+                    }
+                }, function () {
+                    this.sector.animate({scale: [1, 1, this.cx, this.cy]}, 500, "bounce");
+                    if (this.label) {
+                        this.label[0].animate({scale: 1}, 500, "bounce");
+                        this.label[1].attr({"font-weight": 400});
+                    }
+                });
+                
+            };
+        </script>
+	</body>
+</html>
