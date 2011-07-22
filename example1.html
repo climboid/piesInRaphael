@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Raphael examples</title>
+	<script src="raphael.js"></script>
+
+</head>
+<body>
+	<div id="notepad"></div>
+	<script>
+
+	//array that contians the data values
+	var dataValue = [];
+	dataValue[0]= 40;
+	dataValue[1]= 10;
+	dataValue[2]= 90;
+	dataValue[3]= 50;
+	dataValue[4]= 160;
+	dataValue[5]= 20;
+
+	var heightValue = [];
+
+	for(var j =0,jj=dataValue.length; j<jj; j++){
+		if(j==0){
+			heightValue[j]=dataValue[j];
+		}else{
+			heightValue[j]= dataValue[j]-dataValue[j-1];	
+		}
+		
+	}
+
+	console.log("heightValue "+heightValue);
+	var paperHeight = 800;
+	var paper = Raphael(10, 10, 800, paperHeight);
+	// Canvas is created at the top left corner of the #notepad element
+	// (or its top right corner in dir="rtl" elements)
+
+	// Same as above
+	var startFromX = 30;
+	var startFromY = 300;
+	var width = 100;
+	var y2 = 0;
+	var x = 0;
+	var height = 0;
+	var minusPrev = 0
+
+	function makeBar(x,y,w,h){
+		c = paper.rect(x,y,w,h);
+	}
+
+
+	for(var i=0,ii=dataValue.length; i<ii; i++){
+
+		if(i==0){
+			var y = startFromY - dataValue[i];
+			makeBar(startFromX,y,width,dataValue[i]);
+		}else{
+			x = i*width+30;
+			y2 = startFromY-heightValue[i]-dataValue[i-1] - minusPrev;
+			height = heightValue[i];
+			if(height<0){
+				var second = dataValue[i];
+				console.log("in here with value "+dataValue[i]);
+				height = second;
+				console.log('height '+height);
+				y2 = startFromY;
+				minusPrev=-dataValue[i];
+			}
+			makeBar(x,y2,width,height);	
+			
+		}
+	}	
+
+	// Image dump
+	
+
+	
+	</script>
+</body>
+</html>
