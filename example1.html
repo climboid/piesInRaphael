@@ -11,14 +11,14 @@
 
 	//array that contians the data values
 	var dataValue = [];
-	dataValue[0]= 40;
-	dataValue[1]= 10;
-	dataValue[2]= 90;
-	dataValue[3]= 50;
-	dataValue[4]= 160;
-	dataValue[5]= 20;
+	dataValue[0]= 100;
+	dataValue[1]= 50;
+	dataValue[2]= 150;
+	dataValue[3]= 100;
+	dataValue[4]= 200;
+	
 
-	var heightValue = [];
+	var heightValue = []; //contains the difference in height between this bar and the previous bar
 
 	for(var j =0,jj=dataValue.length; j<jj; j++){
 		if(j==0){
@@ -30,51 +30,100 @@
 	}
 
 	console.log("heightValue "+heightValue);
-	var paperHeight = 800;
-	var paper = Raphael(10, 10, 800, paperHeight);
+
+	var paperHeight = 0;
+
+	function findTheHeight(){
+		var test = 0;
+		for(var z=0,zz=dataValue.length; z<zz; z++){
+			if(z==0){
+				paperHeight = dataValue[z];
+			}else{
+				if(dataValue[z] > dataValue[z-1]){
+					console.log("im greater "+z);
+					paperHeight+=dataValue[z];
+				}else{
+					console.log("im smaller "+z);
+					paperHeight-=dataValue[z];
+				}
+			}
+		}
+		paperHeight*=2;
+	}
+
+	findTheHeight();
+
+
+	var paper = Raphael(50, 10, 800, paperHeight);
 	// Canvas is created at the top left corner of the #notepad element
 	// (or its top right corner in dir="rtl" elements)
 
 	// Same as above
 	var startFromX = 30;
-	var startFromY = 300;
+	var startFromY = 400;
 	var width = 100;
-	var y2 = 0;
-	var x = 0;
+	var x = 40;
+	var y = 0;
 	var height = 0;
-	var minusPrev = 0
+	var startFromBottom = false;
 
-	function makeBar(x,y,w,h){
-		c = paper.rect(x,y,w,h);
+
+
+	function makeBar(x,y,w,h,color){
+		c = paper.rect(x,y,w,h).attr({
+			stroke: color,
+			fill: "210-"+color+"-#333"
+		});
 	}
 
+	function makeGrid(){
+		c = paper.path("M1 0 L1 400 M1 400 L800 400");
+	}
+
+	function sumTotBar(){
+		var acum = 0;
+		for(var i=0,ii=heightValue.length; i<ii; i++){
+			acum +=heightValue[i];
+		}
+		y = startFromY - acum;
+		color = '#0000ff';
+		if(acum == 0){
+			acum = 1;
+		}
+		makeBar(x,y,width,acum,color);
+		
+	}
+
+	makeGrid();
 
 	for(var i=0,ii=dataValue.length; i<ii; i++){
 
-		if(i==0){
-			var y = startFromY - dataValue[i];
-			makeBar(startFromX,y,width,dataValue[i]);
+		if(i==0){//the first bar is different from the rest because it has nothing to compare to
+			y = startFromY - dataValue[i];
+			height = dataValue[i];
+			color = '#00ff00';
 		}else{
-			x = i*width+30;
-			y2 = startFromY-heightValue[i]-dataValue[i-1] - minusPrev;
-			height = heightValue[i];
-			if(height<0){
-				var second = dataValue[i];
-				console.log("in here with value "+dataValue[i]);
-				height = second;
-				console.log('height '+height);
-				y2 = startFromY;
-				minusPrev=-dataValue[i];
+			if(heightValue[i]<0){
+				y = startFromY - dataValue[i-1];
+				height = heightValue[i] *(-1);
+				color = '#ff0000';
+			}else{
+				y = startFromY - dataValue[i];
+				height = heightValue[i];
+				color = '#00ff00';
 			}
-			makeBar(x,y2,width,height);	
 			
 		}
+		makeBar(x,y,width,height,color);
+
+		x+=110;	
+		
 	}	
 
-	// Image dump
-	
+	sumTotBar();
 
-	
+
+
 	</script>
 </body>
 </html>
