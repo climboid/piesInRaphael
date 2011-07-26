@@ -11,50 +11,38 @@
 
 	//array that contians the data values
 	var dataValue = [];
-	dataValue[0]= 100;
-	dataValue[1]= 50;
-	dataValue[2]= 150;
-	dataValue[3]= 100;
-	dataValue[4]= 200;
+	dataValue[0]= "100";
+	dataValue[1]= "50";
+	dataValue[2]= "(150)"; //negative numbers are stored with parenthesis
+	dataValue[3]= "100";
+	dataValue[4]= "500";
+
 	
 
 	var heightValue = []; //contains the difference in height between this bar and the previous bar
 
 	for(var j =0,jj=dataValue.length; j<jj; j++){
 		if(j==0){
-			heightValue[j]=dataValue[j];
+			heightValue[j]=parseFloat(dataValue[j]);
 		}else{
-			heightValue[j]= dataValue[j]-dataValue[j-1];	
+			if(dataValue[j].search(/\(/) !== -1){ //if we have a negative number
+				dataValue[j] = dataValue[j].replace(/\(|\)/g,"");
+				dataValue[j] = parseFloat(dataValue[j]);
+				dataValue[j] = (-1)*dataValue[j];
+			}else{
+				dataValue[j] = parseFloat(dataValue[j]);
+			}
+			heightValue[j] = dataValue[j]-dataValue[j-1];	
 		}
 		
 	}
 
-	console.log("heightValue "+heightValue);
+	console.log("typeof "+typeof(heightValue));
 
-	var paperHeight = 0;
-
-	function findTheHeight(){
-		var test = 0;
-		for(var z=0,zz=dataValue.length; z<zz; z++){
-			if(z==0){
-				paperHeight = dataValue[z];
-			}else{
-				if(dataValue[z] > dataValue[z-1]){
-					console.log("im greater "+z);
-					paperHeight+=dataValue[z];
-				}else{
-					console.log("im smaller "+z);
-					paperHeight-=dataValue[z];
-				}
-			}
-		}
-		paperHeight*=2;
-	}
-
-	findTheHeight();
+	var paperHeight = 600;
 
 
-	var paper = Raphael(50, 10, 800, paperHeight);
+	var paper = Raphael(50, 50, 800, paperHeight);
 	// Canvas is created at the top left corner of the #notepad element
 	// (or its top right corner in dir="rtl" elements)
 
@@ -77,20 +65,35 @@
 	}
 
 	function makeGrid(){
-		c = paper.path("M1 0 L1 400 M1 400 L800 400");
+		c = paper.path("M30 10 L30 800 M30 410 L800 410");
+		for(var i=10,ii=1000; i<ii; i+=50){
+			c = paper.path("M25 "+i+" L40 "+i+"");
+			//c = paper.text(15, i, i);
+		}
+
+		for(var j=40,jj=1000; j<jj; j+=50){
+			c = paper.path("M"+j+" 390 L"+j+" 410");
+		}
 	}
 
 	function sumTotBar(){
+		console.log("im in sumTotBar");
 		var acum = 0;
 		for(var i=0,ii=heightValue.length; i<ii; i++){
 			acum +=heightValue[i];
 		}
+		console.log("acum "+acum);
+
 		y = startFromY - acum;
+
+		console.log("y "+y);
 		color = '#0000ff';
 		if(acum == 0){
 			acum = 1;
+		}else if(acum<0){
+			acum = (-1)*acum;
 		}
-		makeBar(x,y,width,acum,color);
+		makeBar(x,y+10,width,acum,color);
 		
 	}
 
@@ -114,7 +117,8 @@
 			}
 			
 		}
-		makeBar(x,y,width,height,color);
+
+		makeBar(x,y+10,width,height,color);
 
 		x+=110;	
 		
