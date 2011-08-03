@@ -12,51 +12,34 @@
 	<script>
 
 	//array that contians the data values
-/*	
+/*
 	var values = [];
 	values[0]= "(50)";
-	values[1]= "(80)";
-	values[2]= "(95)"; //negative numbers are stored with parenthesis
-	values[3]= "(100)";
-	values[4]= "(110)";
-	
+	values[1]= "(60)";
+	values[2]= "(75)"; //negative numbers are stored with parenthesis
+	values[3]= "(110)";
+	values[4]= "(100)";
 
+*/	
 	var values = [];
 	values[0]= "50";
 	values[1]= "80";
 	values[2]= "95"; //negative numbers are stored with parenthesis
-	values[3]= "100";
-	values[4]= "110";
-*/
+	values[3]= "110";
+	values[4]= "100";
 
+/*
 	var values = [];
-	values[0]= "(50)";
+	values[0]= "(150)";
 	values[1]= "80";
 	values[2]= "95"; //negative numbers are stored with parenthesis
 	values[3]= "(100)";
 	values[4]= "110";
+*/
 
+	var paperWidth = 800;
+	var paperHeight = 300;
 
-	var paperWidth = 0;
-	var paperHeight = 0;
-
-	function determinePaperDim(){
-		paperWidth = values.length * 100 + 200;
-		var acum = 0;
-		var findH = [];
-		for(var k=0,kk=values.length; k<kk; k++){
-			findH[k] = values[k].replace(/\(|\)/g,"-");
-			acum+=parseFloat(findH[k]);
-		}
-		if(acum<0){
-			acum = acum * (-1);
-		}
-		paperHeight = acum;
-		
-		
-	}
-
-	determinePaperDim();
 
 	var heightValue = []; //contains the difference in height between this bar and the previous bar
 
@@ -100,6 +83,7 @@
 			//stroke: color,
 			fill: "210-"+color+"-#333"
 		});
+
 	}
 
 	function makeGrid(){
