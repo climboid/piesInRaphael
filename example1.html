@@ -4,7 +4,6 @@
 	<title>Raphael examples</title>
 
 	<script src="raphael.js"></script>
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>	
 	<!--<script src="waterfall.js"></script>-->
 
 </head>
@@ -13,18 +12,48 @@
 	<script>
 
 	//array that contians the data values
+/*	
+	var values = [];
+	values[0]= "(50)";
+	values[1]= "(80)";
+	values[2]= "(95)"; //negative numbers are stored with parenthesis
+	values[3]= "(100)";
+	values[4]= "(110)";
+	
+
 	var values = [];
 	values[0]= "50";
-	values[1]= "85";
+	values[1]= "80";
 	values[2]= "95"; //negative numbers are stored with parenthesis
 	values[3]= "100";
 	values[4]= "110";
+*/
 
-	var paperWidth = 400;
-	var paperHeight = 400;
+	var values = [];
+	values[0]= "(50)";
+	values[1]= "80";
+	values[2]= "95"; //negative numbers are stored with parenthesis
+	values[3]= "(100)";
+	values[4]= "110";
+
+
+	var paperWidth = 0;
+	var paperHeight = 0;
 
 	function determinePaperDim(){
 		paperWidth = values.length * 100 + 200;
+		var acum = 0;
+		var findH = [];
+		for(var k=0,kk=values.length; k<kk; k++){
+			findH[k] = values[k].replace(/\(|\)/g,"-");
+			acum+=parseFloat(findH[k]);
+		}
+		if(acum<0){
+			acum = acum * (-1);
+		}
+		paperHeight = acum;
+		
+		
 	}
 
 	determinePaperDim();
@@ -33,6 +62,10 @@
 
 	for(var j =0,jj=values.length; j<jj; j++){
 		if(j==0){
+			if(values[j].search(/\(/)!==-1){
+				values[j] = values[j].replace(/\(|\)/g,"");
+				values[j] = "-"+values[j];
+			}
 			heightValue[j]= parseFloat(values[j]);
 		}else{
 			if(values[j].search(/\(/) !== -1){ //if we have a negative number
@@ -46,6 +79,7 @@
 		}
 		
 	}
+
 
 	var paper = Raphael(50, 50, paperWidth+50, paperHeight+50); //we add 50 to both height and width to give it a bit of gap
 
@@ -61,6 +95,7 @@
 
 
 	function makeBar(x,y,w,h,color){
+		console.log("heights "+h);
 		c = paper.rect(x,y,w,h).attr({
 			//stroke: color,
 			fill: "210-"+color+"-#333"
@@ -70,6 +105,7 @@
 	function makeGrid(){
 		var correctXaxis = paperWidth + 10;
 		var correctYaxis = (paperHeight/2) + 10;
+
 		c = paper.path('M30 10 L30 '+(paperHeight+10)+''); //horizontal grid line
 		c = paper.path("M30 "+correctYaxis+" L"+paperWidth+" "+correctYaxis); //vertical grid line
 
@@ -82,14 +118,14 @@
 		//text labels for the grid
 		for (var z=0,zz=paperHeight; z<=zz; z+=50){
 			if(x!==0){
-				c = paper.text(15, (paperHeight/2)-z+10, z);	
+				//c = paper.text(15, (paperHeight/2)-z+10, z);	
 			}
 			
 		}
 
 		for (var x=0,xx=paperHeight; x<=xx; x+=50){
 			if(x!==0){
-				c = paper.text(12, (paperHeight/2)+x+10, "- "+x);	
+				//c = paper.text(12, (paperHeight/2)+x+10, "- "+x);	
 			}
 			
 		}
@@ -108,18 +144,25 @@
 			acum = 1;
 		}else if(acum<0){
 			acum = (-1)*acum;
+			y = startFromY;
 		}
+
 		makeBar(x,y+10,bwidth,acum,color);
 		
 	}
 
 
 	for(var i=0,ii=values.length; i<ii; i++){
-
 		if(i==0){//the first bar is different from the rest because it has nothing to compare to
-			y = startFromY - values[i];
-			height = values[i];
-			color = '#00ff00';
+			if(values[i]<0){
+				y = startFromY;
+				height = values[i]*(-1);	
+				color = '#ff0000';	
+			}else{
+				y = startFromY - values[i];
+				height = values[i];	
+				color = '#00ff00';				
+			}				
 			x = 50;
 		}else{
 			if(heightValue[i]<0){
@@ -133,18 +176,14 @@
 			}
 			
 		}
-
 		makeBar(x,y+10,bwidth,height,color);
 
 		x+=100;	
 		
-	}	
-
-
-	$(document).ready(function(){	
-		sumTotBar();	
-		makeGrid();
-	});
+	}
+		
+	sumTotBar();	
+	makeGrid();
 
 	</script>
 
